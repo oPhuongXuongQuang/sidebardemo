@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>064A9548-00F8-4D28-A182-46DE22467EB8</string>
+	<key>IDESourceControlProjectName</key>
+	<string>ghinhap</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>1DB7C93A9E552C4EE8082769A83FECA5CC94BD61</key>
+		<string>https://github.com/quangphuong169/ghichu.git</string>
+		<key>1DB7C93A9E552C4EE8082769A83FECA5CC94BD61+++612E576</key>
+		<string>https://github.com/quangphuong169/ghichu.git</string>
+		<key>1DB7C93A9E552C4EE8082769A83FECA5CC94BD61+++C912D24</key>
+		<string>https://github.com/oPhuongXuongQuang/ghinhap.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>ghinhap.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>1DB7C93A9E552C4EE8082769A83FECA5CC94BD61</key>
+		<string>../..</string>
+		<key>1DB7C93A9E552C4EE8082769A83FECA5CC94BD61+++612E576</key>
+		<string>../../../ghichu</string>
+		<key>1DB7C93A9E552C4EE8082769A83FECA5CC94BD61+++C912D24</key>
+		<string>../../../ghichu</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/quangphuong169/ghichu.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>1DB7C93A9E552C4EE8082769A83FECA5CC94BD61</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>1DB7C93A9E552C4EE8082769A83FECA5CC94BD61+++612E576</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ghichu</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>1DB7C93A9E552C4EE8082769A83FECA5CC94BD61+++C912D24</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ghichu</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>1DB7C93A9E552C4EE8082769A83FECA5CC94BD61</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ghinhap</string>
+		</dict>
+	</array>
+</dict>
+</plist>

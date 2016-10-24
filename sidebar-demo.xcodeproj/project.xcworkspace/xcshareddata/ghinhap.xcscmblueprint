@@ -1,0 +1,44 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "30DCEA476D9F1727C27B3F8322E058ADC081F49C+++112247A",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "1DB7C93A9E552C4EE8082769A83FECA5CC94BD61+++5A3C5CC" : 0,
+    "1DB7C93A9E552C4EE8082769A83FECA5CC94BD61+++612E576" : 0,
+    "1DB7C93A9E552C4EE8082769A83FECA5CC94BD61+++C912D24" : 0,
+    "30DCEA476D9F1727C27B3F8322E058ADC081F49C+++112247A" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "064A9548-00F8-4D28-A182-46DE22467EB8",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "1DB7C93A9E552C4EE8082769A83FECA5CC94BD61+++5A3C5CC" : "ghinhap\/",
+    "1DB7C93A9E552C4EE8082769A83FECA5CC94BD61+++612E576" : "ghichu",
+    "1DB7C93A9E552C4EE8082769A83FECA5CC94BD61+++C912D24" : "ghichu",
+    "30DCEA476D9F1727C27B3F8322E058ADC081F49C+++112247A" : "side-bar-demo\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "ghinhap",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "ghinhap.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/quangphuong169\/ghichu.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "1DB7C93A9E552C4EE8082769A83FECA5CC94BD61+++5A3C5CC"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/quangphuong169\/ghichu.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "1DB7C93A9E552C4EE8082769A83FECA5CC94BD61+++612E576"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/oPhuongXuongQuang\/ghinhap.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "1DB7C93A9E552C4EE8082769A83FECA5CC94BD61+++C912D24"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/bitbucket.org\/quangphuong\/ghinhap.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "30DCEA476D9F1727C27B3F8322E058ADC081F49C+++112247A"
+    }
+  ]
+}
