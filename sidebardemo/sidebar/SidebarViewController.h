@@ -7,11 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "NewsManager.h"
 
 @interface SidebarViewController : UITableViewController
 
-@property NSMutableArray *nhapList;
-
+@property NSArray *notiList;
 @property (nonatomic) NSInteger nhapIndexOnMainView;
+@property (nonatomic) NewsManager *newsManager;
 
 @end

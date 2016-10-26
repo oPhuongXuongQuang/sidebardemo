@@ -77,7 +77,7 @@
     if (currentAddress != nil) {
         [addressBar setText:currentAddress];
     } else {
-        [addressBar setText:@"http://www.google.com"];
+//        [addressBar setText:@"http://hmtmoda.com/"];
     }
     [addressBar setTag:0];
     addressBar.delegate = self;

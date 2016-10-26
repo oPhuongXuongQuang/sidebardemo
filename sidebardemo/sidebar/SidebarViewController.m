@@ -11,14 +11,17 @@
 #import "ViewController.h"
 #import "TableCell.h"
 #import "NhapItem.h"
+#import "Notification.h"
+
+#define kDeviceId 11111
+#define kDeviceName @"IOS"
+#define kPage 0
 
 @interface SidebarViewController (){
     NSString *homeNhapName;
 }
 
 @property NSInteger index;
-- (void)getAllData;
-
 @end
 
 @implementation SidebarViewController
@@ -28,12 +31,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.nhapList = [[NSMutableArray alloc]init];
+    _newsManager = [[NewsManager alloc] init];
+    self.notiList = [[NSMutableArray alloc]init];
     
-    [self.nhapList addObject: [[NhapItem alloc] initWithName:@"http://www.google.com" createDate:[NSDate date] isLocal:false owner:@""]];
-    [self.nhapList addObject: [[NhapItem alloc] initWithName:@"http://www.apple.com" createDate:[NSDate date] isLocal:false owner:@""]];
-    [self.nhapList addObject: [[NhapItem alloc] initWithName:@"http://www.microsoft.com" createDate:[NSDate date] isLocal:false owner:@""]];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchNewsNotification:) name:@"FetchNewsNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:@"ReceiveNewsNotification" object:nil];
     nhapIndexOnMainView = -1;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableWithNotification:) name:@"RefreshSidebarView" object:nil];
@@ -41,14 +43,14 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setMainViewNhapName:) name:@"SetMainViewAddressBar" object:nil];
     
     //Add long press event
-    UILongPressGestureRecognizer* longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(onLongPress:)];
-    [self.tableView addGestureRecognizer:longPressRecognizer];
-    
-    UITapGestureRecognizer *doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onDoubleTap:)];
-    doubleTapRecognizer.numberOfTapsRequired = 2;
-    doubleTapRecognizer.numberOfTouchesRequired = 1;
-    [self.tableView addGestureRecognizer:doubleTapRecognizer];
-    
+//    UILongPressGestureRecognizer* longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(onLongPress:)];
+//    [self.tableView addGestureRecognizer:longPressRecognizer];
+//    
+//    UITapGestureRecognizer *doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onDoubleTap:)];
+//    doubleTapRecognizer.numberOfTapsRequired = 2;
+//    doubleTapRecognizer.numberOfTouchesRequired = 1;
+//    [self.tableView addGestureRecognizer:doubleTapRecognizer];
+//    
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -58,7 +60,9 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"ResetBadge" object:nil userInfo:nil];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"FetchNewsNotification" object:nil];
+    });
 }
 
 - (void)didReceiveMemoryWarning {
@@ -73,7 +77,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.nhapList count];
+    return [self.notiList count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -93,13 +97,16 @@
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(TableCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
     
-    NhapItem *nhapItem = [self.nhapList objectAtIndex:indexPath.row];
+    Notification *notiObj = [self.notiList objectAtIndex:indexPath.row];
     
-    cell.nhapName.text = nhapItem.name;
+    cell.nhapName.text = notiObj.noti_content;
+    NSTimeInterval seconds = [notiObj.noti_time doubleValue];
+    NSDate *epochNSDate = [[NSDate alloc] initWithTimeIntervalSince1970:seconds];
+    
     NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
     NSCalendar* calender = [NSCalendar currentCalendar];
     NSDateComponents* today = [calender components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:[NSDate date]];
-    NSDateComponents* currentDate = [calender components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:nhapItem.createDate];
+    NSDateComponents* currentDate = [calender components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:epochNSDate];
     NSString *dayPrefix = @"";
     if([today year] == [currentDate year] && [today month] == [currentDate month]){
         NSInteger diff = ([today day] - [currentDate day]);
@@ -115,7 +122,14 @@
     } else {
         [dateFormat setDateFormat:@"dd/MM/yyyy hh:mm a"];
     }
-    cell.createDate.text = [dayPrefix stringByAppendingString:[dateFormat stringFromDate:nhapItem.createDate]];
+    cell.createDate.text = [dayPrefix stringByAppendingString:[dateFormat stringFromDate:epochNSDate]];
+    if (![notiObj.noti_img isKindOfClass:[NSNull class]] && ![notiObj.noti_img  isEqual: @""] && ![notiObj.noti_img  isEqual: @"null"]) {
+        
+        NSURL *url = [NSURL URLWithString:notiObj.noti_img];
+        NSData *data = [NSData dataWithContentsOfURL:url];
+        UIImage *image = [UIImage imageWithData:data];
+        cell.thumbnail.image = image;
+    }
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -129,31 +143,32 @@
 
 // In a xib-based application, navigation from a table can be handled in -tableView:didSelectRowAtIndexPath:
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NhapItem *nhapItem = [self.nhapList objectAtIndex:indexPath.row];
+    Notification *noti = [self.notiList objectAtIndex:indexPath.row];
     if (nhapIndexOnMainView == indexPath.row) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"ToggleTheMenuView" object:nil];
-    } else {
+    }
+    else {
         _index = indexPath.row;
-        [self performSegueWithIdentifier:@"reloadWebview" sender:nhapItem.name];
+        [self performSegueWithIdentifier:@"reloadWebview" sender:noti.noti_link];
     }
 }
 
 /* Add long-press event to cell
  */
--(void)onLongPress:(UILongPressGestureRecognizer*)pGesture
-{
-    if (pGesture.state == UIGestureRecognizerStateEnded) {
-        UITableView* tableView = (UITableView*)self.view;
-        CGPoint touchPoint = [pGesture locationInView:self.view];
-        NSIndexPath* indexPath = [tableView indexPathForRowAtPoint:touchPoint];
-        
-        NhapItem *nhapItem = [self.nhapList objectAtIndex:indexPath.row];
-        _index = indexPath.row;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self performSegueWithIdentifier:@"reloadWebview" sender:nhapItem.name];
-        });
-    }
-}
+//-(void)onLongPress:(UILongPressGestureRecognizer*)pGesture
+//{
+//    if (pGesture.state == UIGestureRecognizerStateEnded) {
+//        UITableView* tableView = (UITableView*)self.view;
+//        CGPoint touchPoint = [pGesture locationInView:self.view];
+//        NSIndexPath* indexPath = [tableView indexPathForRowAtPoint:touchPoint];
+//        
+//        NhapItem *nhapItem = [self.notiList objectAtIndex:indexPath.row];
+//        _index = indexPath.row;
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [self performSegueWithIdentifier:@"reloadWebview" sender:nhapItem.name];
+//        });
+//    }
+//}
 
 /* Add long-press event to cell
  */
@@ -164,11 +179,9 @@
         CGPoint touchPoint = [pGesture locationInView:self.view];
         NSIndexPath* indexPath = [tableView indexPathForRowAtPoint:touchPoint];
         
-        NhapItem *nhapItem = [self.nhapList objectAtIndex:indexPath.row];
+        Notification *noti = [self.notiList objectAtIndex:indexPath.row];
         _index = indexPath.row;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self performSegueWithIdentifier:@"reloadWebview" sender:nhapItem.name];
-        });
+        [self performSegueWithIdentifier:@"reloadWebview" sender:noti.noti_link];
     }
 }
 
@@ -191,11 +204,28 @@
 
 - (void)refreshTableWithNotification:(NSNotification *)notification
 {
-    [self getAllData];
     [self.tableView reloadData];
     NSDictionary* userInfo = notification.userInfo;
     NSNumber *index = (NSNumber *)userInfo[@"index"];
     nhapIndexOnMainView = index.intValue;
+}
+
+- (void)fetchNewsNotification:(NSNotification *)notification
+{
+    [_newsManager fetchNewsByDeviceId:kDeviceId deviceName:kDeviceName page:kPage];
+}
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 150;
+}
+
+# pragma mark - NotificationDelegate
+- (void)didReceiveNotification:(NSNotification *)notification
+{
+    NSLog(@"Hello");
+    NSDictionary *dataDict= (NSDictionary *)notification.object;
+    self.notiList = (NSArray *) dataDict[@"notis"];
+    [self.tableView reloadData];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{

@@ -1,6 +1,6 @@
 //
 //  AppDelegate.m
-//  ghinhap
+//  sidebardemo
 //
 //  Created by quangpx on 7/10/15.
 //  Copyright (c) 2015 fsoft. All rights reserved.
@@ -9,6 +9,9 @@
 #import "AppDelegate.h"
 #import "SWRevealViewController.h"
 #import "ViewController.h"
+
+@import Firebase;
+@import UIKit;
 
 @interface AppDelegate ()
 
@@ -19,8 +22,141 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-
+    
+    
+    if (floor(NSFoundationVersionNumber) <= NSFoundationVersionNumber_iOS_9_x_Max) {
+        UIUserNotificationType allNotificationTypes =
+        (UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge);
+        UIUserNotificationSettings *settings =
+        [UIUserNotificationSettings settingsForTypes:allNotificationTypes categories:nil];
+        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+    } else {
+        // iOS 10 or later
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+        UNAuthorizationOptions authOptions =
+        UNAuthorizationOptionAlert
+        | UNAuthorizationOptionSound
+        | UNAuthorizationOptionBadge;
+        [[UNUserNotificationCenter currentNotificationCenter]
+         requestAuthorizationWithOptions:authOptions
+         completionHandler:^(BOOL granted, NSError * _Nullable error) {
+         }
+         ];
+        
+        // For iOS 10 display notification (sent via APNS)
+        [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self];
+        // For iOS 10 data message (sent via FCM)
+        [[FIRMessaging messaging] setRemoteMessageDelegate:self];
+#endif
+    }
+    
+    [[UIApplication sharedApplication] registerForRemoteNotifications];
+    
+    
+    [FIRApp configure];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(tokenRefreshNotification:) name:kFIRInstanceIDTokenRefreshNotification object:nil];
     return YES;
+}
+
+- (void)tokenRefreshNotification:(NSNotification *)notification {
+    // Note that this callback will be fired everytime a new token is generated, including the first
+    // time. So if you need to retrieve the token as soon as it is available this is where that
+    // should be done.
+    NSString *refreshedToken = [[FIRInstanceID instanceID] token];
+    NSLog(@"InstanceID token: %@", refreshedToken);
+    
+    // Connect to FCM since connection may have failed when attempted before having a token.
+    [self connectToFcm];
+    
+    // TODO: If necessary send token to application server.
+}
+
+ - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings NS_AVAILABLE_IOS(8_0) __TVOS_PROHIBITED
+{
+    [[UIApplication sharedApplication] registerForRemoteNotifications];
+}
+
+- (void)connectToFcm {
+    [[FIRMessaging messaging] connectWithCompletion:^(NSError * _Nullable error) {
+        if (error != nil) {
+            NSLog(@"Unable to connect to FCM. %@", error);
+        } else {
+            NSLog(@"Connected to FCM.");
+        }
+        NSString *refreshedToken = [[FIRInstanceID instanceID] token];
+        NSLog(@"InstanceID token: %@", refreshedToken);
+    }];
+}
+
+// To receive notifications for iOS 9 and below.
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    // If you are receiving a notification message while your app is in the background,
+    // this callback will not be fired till the user taps on the notification launching the application.
+    // TODO: Handle data of notification
+    
+    // Print message ID.
+    NSLog(@"Message ID: %@", userInfo[@"gcm.message_id"]);
+    
+    // Print full message.
+    NSLog(@"%@", userInfo);
+    
+    
+    if(application.applicationState == UIApplicationStateInactive) {
+        
+        NSLog(@"Inactive");
+        
+        //Show the view with the content of the push
+        
+        completionHandler(UIBackgroundFetchResultNewData);
+        
+    } else if (application.applicationState == UIApplicationStateBackground) {
+        
+        NSLog(@"Background");
+        
+        //Refresh the local model
+        
+        completionHandler(UIBackgroundFetchResultNewData);
+        
+    } else {
+        
+        NSLog(@"Active");
+        
+        //Show an in-app banner
+        
+        completionHandler(UIBackgroundFetchResultNewData);
+        
+    }
+}
+
+// Receive displayed notifications for iOS 10 devices.
+#if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center
+       willPresentNotification:(UNNotification *)notification
+         withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler {
+    // Print message ID.
+    NSDictionary *userInfo = notification.request.content.userInfo;
+    NSLog(@"Message ID: %@", userInfo[@"gcm.message_id"]);
+    
+    // Print full message.
+    NSLog(@"%@", userInfo);
+    
+    
+}
+
+// Receive data message on iOS 10 devices.
+- (void)applicationReceivedRemoteMessage:(FIRMessagingRemoteMessage *)remoteMessage {
+    // Print full message
+    NSLog(@"%@", [remoteMessage appData]);
+}
+#endif
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken NS_AVAILABLE_IOS(3_0)
+{
+    NSString *tokenChars = [[NSString alloc] initWithData:deviceToken encoding:NSUTF8StringEncoding];
+    
+    NSLog(@"DM day la token: %@", tokenChars);
+    [FIRInstanceID.instanceID setAPNSToken:deviceToken type:FIRInstanceIDAPNSTokenTypeSandbox];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -40,6 +176,7 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    [self connectToFcm];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -64,7 +201,7 @@
     if (_managedObjectModel != nil) {
         return _managedObjectModel;
     }
-    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"ghinhap" withExtension:@"momd"];
+    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"sidebardemo" withExtension:@"momd"];
     _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     return _managedObjectModel;
 }
@@ -78,7 +215,7 @@
     // Create the coordinator and store
     
     _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"ghinhap.sqlite"];
+    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"sidebardemo.sqlite"];
     NSError *error = nil;
     NSString *failureReason = @"There was an error creating or loading the application's saved data.";
     if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
@@ -127,4 +264,5 @@
         }
     }
 }
+
 @end
