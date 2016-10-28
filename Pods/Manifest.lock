@@ -1,4 +1,5 @@
 PODS:
+  - CRToast (0.0.9)
   - Firebase/Core (3.8.0):
     - FirebaseAnalytics (= 3.5.1)
     - FirebaseCore (= 3.4.4)
@@ -31,10 +32,12 @@ PODS:
     - GoogleToolboxForMac/Defines (= 2.1.0)
 
 DEPENDENCIES:
+  - CRToast (~> 0.0.7)
   - Firebase/Core
   - Firebase/Messaging
 
 SPEC CHECKSUMS:
+  CRToast: 5a78c22b921c5ed3487488af605bc403a9c92fed
   Firebase: fdbecadb7b5cbef2774852d4fa659b9daf11f2af
   FirebaseAnalytics: 6e58fc9b397664369ac7617fb0ba93fab6ba7b5b
   FirebaseCore: d0ed25f27b6f9158eccc439f1be6f92e81207e28
@@ -44,6 +47,6 @@ SPEC CHECKSUMS:
   GoogleSymbolUtilities: 631ee17048aa5e9ab133470d768ea997a5ef9b96
   GoogleToolboxForMac: 2b2596cbb7186865e98cadf2b1e262d851c2b168
 
-PODFILE CHECKSUM: cad2c460af49dea2c1a91f4adbfe29667d65e085
+PODFILE CHECKSUM: 7667e3eac5c0df58b5c5d862504aeaeb191b1f27
 
 COCOAPODS: 1.1.1

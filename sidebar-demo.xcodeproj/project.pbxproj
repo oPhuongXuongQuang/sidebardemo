@@ -34,13 +34,15 @@
 		BC1AAC6A1DC0719500C57452 /* NotificationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BC1AAC691DC0719500C57452 /* NotificationManager.m */; };
 		BC482A041B5CAB23009C09DE /* TableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BC482A031B5CAB23009C09DE /* TableCell.xib */; };
 		BC482A071B5CAC8D009C09DE /* TableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BC482A061B5CAC8D009C09DE /* TableCell.m */; };
-		BC482A0E1B5CC443009C09DE /* NhapItem.m in Sources */ = {isa = PBXBuildFile; fileRef = BC482A0D1B5CC443009C09DE /* NhapItem.m */; };
 		BC482A591B5CF114009C09DE /* sidebardemo.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BC482A571B5CF114009C09DE /* sidebardemo.xcdatamodeld */; };
 		BC5797FA1B636B7B00A0764B /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = BC5797F91B636B7B00A0764B /* Reachability.m */; };
 		BCA2B7111B5BEFDB00B51957 /* UIBarButtonItem+Badge.m in Sources */ = {isa = PBXBuildFile; fileRef = BCA2B7101B5BEFDB00B51957 /* UIBarButtonItem+Badge.m */; };
 		BCC51C811DC0D05700944DC9 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BCC51C801DC0D05700944DC9 /* GoogleService-Info.plist */; };
 		BCC83E561B5C066F00B2E221 /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC83E551B5C066F00B2E221 /* SWRevealViewController.m */; };
 		BCC83E5C1B5C0B8D00B2E221 /* SidebarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BCC83E5A1B5C0B8D00B2E221 /* SidebarViewController.m */; };
+		BCCB1A391DC332B40071016D /* AGPushNoteView.m in Sources */ = {isa = PBXBuildFile; fileRef = BCCB1A371DC332B40071016D /* AGPushNoteView.m */; };
+		BCCB1A3A1DC332B40071016D /* AGPushNoteView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BCCB1A381DC332B40071016D /* AGPushNoteView.xib */; };
+		BCCB1A3D1DC3612D0071016D /* NewsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BCCB1A3C1DC3612D0071016D /* NewsDetailViewController.m */; };
 		BCCD44501DC07B25000C3A8D /* NewsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BCCD444F1DC07B25000C3A8D /* NewsManager.m */; };
 /* End PBXBuildFile section */
 
@@ -100,8 +102,6 @@
 		BC482A031B5CAB23009C09DE /* TableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = TableCell.xib; path = sidebardemo/TableCell.xib; sourceTree = "<group>"; };
 		BC482A051B5CAC8D009C09DE /* TableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TableCell.h; path = sidebardemo/sidebar/TableCell.h; sourceTree = "<group>"; };
 		BC482A061B5CAC8D009C09DE /* TableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TableCell.m; path = sidebardemo/sidebar/TableCell.m; sourceTree = "<group>"; };
-		BC482A0D1B5CC443009C09DE /* NhapItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NhapItem.m; path = sidebardemo/NhapItem.m; sourceTree = "<group>"; };
-		BC482A101B5CC7F1009C09DE /* NhapItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NhapItem.h; path = sidebardemo/NhapItem.h; sourceTree = "<group>"; };
 		BC482A581B5CF114009C09DE /* sidebardemo.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = sidebardemo.xcdatamodel; sourceTree = "<group>"; };
 		BC5797F81B636B7B00A0764B /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		BC5797F91B636B7B00A0764B /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
@@ -112,6 +112,11 @@
 		BCC83E551B5C066F00B2E221 /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SWRevealViewController.m; path = sidebardemo/sidebar/SWRevealViewController.m; sourceTree = "<group>"; };
 		BCC83E591B5C0B8D00B2E221 /* SidebarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SidebarViewController.h; path = sidebardemo/sidebar/SidebarViewController.h; sourceTree = "<group>"; };
 		BCC83E5A1B5C0B8D00B2E221 /* SidebarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SidebarViewController.m; path = sidebardemo/sidebar/SidebarViewController.m; sourceTree = "<group>"; };
+		BCCB1A361DC332B40071016D /* AGPushNoteView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AGPushNoteView.h; sourceTree = "<group>"; };
+		BCCB1A371DC332B40071016D /* AGPushNoteView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AGPushNoteView.m; sourceTree = "<group>"; };
+		BCCB1A381DC332B40071016D /* AGPushNoteView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AGPushNoteView.xib; sourceTree = "<group>"; };
+		BCCB1A3B1DC3612D0071016D /* NewsDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsDetailViewController.h; sourceTree = "<group>"; };
+		BCCB1A3C1DC3612D0071016D /* NewsDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsDetailViewController.m; sourceTree = "<group>"; };
 		BCCD444E1DC07B25000C3A8D /* NewsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsManager.h; sourceTree = "<group>"; };
 		BCCD444F1DC07B25000C3A8D /* NewsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsManager.m; sourceTree = "<group>"; };
 		BCCD44521DC0B8F8000C3A8D /* sidebardemo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = sidebardemo.entitlements; sourceTree = "<group>"; };
@@ -191,9 +196,13 @@
 		77B81AC11B4FD6E4003908E1 /* sidebardemo */ = {
 			isa = PBXGroup;
 			children = (
-				BC482A0C1B5CC3DC009C09DE /* model */,
-				BC482A081B5CBDE6009C09DE /* database */,
-				BCC83E531B5C065D00B2E221 /* sidebar */,
+				BC482A571B5CF114009C09DE /* sidebardemo.xcdatamodeld */,
+				77B81AC61B4FD6E4003908E1 /* AppDelegate.h */,
+				77B81AC71B4FD6E4003908E1 /* AppDelegate.m */,
+				77B81AC91B4FD6E4003908E1 /* ViewController.h */,
+				77B81ACA1B4FD6E4003908E1 /* ViewController.m */,
+				BCCB1A3B1DC3612D0071016D /* NewsDetailViewController.h */,
+				BCCB1A3C1DC3612D0071016D /* NewsDetailViewController.m */,
 				BC1AAC681DC0719500C57452 /* NotificationManager.h */,
 				BC1AAC691DC0719500C57452 /* NotificationManager.m */,
 				BCCD444E1DC07B25000C3A8D /* NewsManager.h */,
@@ -202,14 +211,13 @@
 				BC5797F91B636B7B00A0764B /* Reachability.m */,
 				BCA2B70F1B5BEFDB00B51957 /* UIBarButtonItem+Badge.h */,
 				BCA2B7101B5BEFDB00B51957 /* UIBarButtonItem+Badge.m */,
-				77B81AC61B4FD6E4003908E1 /* AppDelegate.h */,
-				77B81AC71B4FD6E4003908E1 /* AppDelegate.m */,
-				77B81AC91B4FD6E4003908E1 /* ViewController.h */,
-				77B81ACA1B4FD6E4003908E1 /* ViewController.m */,
 				77B81ACC1B4FD6E4003908E1 /* Main.storyboard */,
-				77B81ACF1B4FD6E4003908E1 /* Images.xcassets */,
 				77B81AD11B4FD6E4003908E1 /* LaunchScreen.xib */,
+				BCC83E531B5C065D00B2E221 /* sidebar */,
+				BCCB1A351DC332B40071016D /* AGPushNote */,
+				BC482A0C1B5CC3DC009C09DE /* model */,
 				77B81AC21B4FD6E4003908E1 /* Supporting Files */,
+				77B81ACF1B4FD6E4003908E1 /* Images.xcassets */,
 			);
 			path = sidebardemo;
 			sourceTree = "<group>";
@@ -301,20 +309,9 @@
 			path = sidebardemo/resources/icomoon;
 			sourceTree = "<group>";
 		};
-		BC482A081B5CBDE6009C09DE /* database */ = {
-			isa = PBXGroup;
-			children = (
-				BC482A571B5CF114009C09DE /* sidebardemo.xcdatamodeld */,
-			);
-			name = database;
-			path = ..;
-			sourceTree = "<group>";
-		};
 		BC482A0C1B5CC3DC009C09DE /* model */ = {
 			isa = PBXGroup;
 			children = (
-				BC482A101B5CC7F1009C09DE /* NhapItem.h */,
-				BC482A0D1B5CC443009C09DE /* NhapItem.m */,
 				BC1AAC621DC0675100C57452 /* Notification.h */,
 				BC1AAC631DC0675100C57452 /* Notification.m */,
 			);
@@ -335,6 +332,16 @@
 			);
 			name = sidebar;
 			path = ..;
+			sourceTree = "<group>";
+		};
+		BCCB1A351DC332B40071016D /* AGPushNote */ = {
+			isa = PBXGroup;
+			children = (
+				BCCB1A361DC332B40071016D /* AGPushNoteView.h */,
+				BCCB1A371DC332B40071016D /* AGPushNoteView.m */,
+				BCCB1A381DC332B40071016D /* AGPushNoteView.xib */,
+			);
+			path = AGPushNote;
 			sourceTree = "<group>";
 		};
 		FACF29D80C8398D5A5AC4EA8 /* Pods */ = {
@@ -472,6 +479,7 @@
 				77C515E21B661B3E0012810F /* icomoon.ttf in Resources */,
 				77B81ACE1B4FD6E4003908E1 /* Main.storyboard in Resources */,
 				77B81AD31B4FD6E4003908E1 /* LaunchScreen.xib in Resources */,
+				BCCB1A3A1DC332B40071016D /* AGPushNoteView.xib in Resources */,
 				77C515E11B661B3E0012810F /* icomoon.plist in Resources */,
 				77C515C91B65FEE00012810F /* CONDENSEicon.ttf in Resources */,
 				BC482A041B5CAB23009C09DE /* TableCell.xib in Resources */,
@@ -594,14 +602,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				BC1AAC641DC0675100C57452 /* Notification.m in Sources */,
+				BCCB1A3D1DC3612D0071016D /* NewsDetailViewController.m in Sources */,
 				77B81ACB1B4FD6E4003908E1 /* ViewController.m in Sources */,
 				BCCD44501DC07B25000C3A8D /* NewsManager.m in Sources */,
 				77B81AC81B4FD6E4003908E1 /* AppDelegate.m in Sources */,
-				BC482A0E1B5CC443009C09DE /* NhapItem.m in Sources */,
 				BCC83E561B5C066F00B2E221 /* SWRevealViewController.m in Sources */,
 				BCC83E5C1B5C0B8D00B2E221 /* SidebarViewController.m in Sources */,
 				BC1AAC6A1DC0719500C57452 /* NotificationManager.m in Sources */,
 				BC482A071B5CAC8D009C09DE /* TableCell.m in Sources */,
+				BCCB1A391DC332B40071016D /* AGPushNoteView.m in Sources */,
 				BCA2B7111B5BEFDB00B51957 /* UIBarButtonItem+Badge.m in Sources */,
 				77B81AC51B4FD6E4003908E1 /* main.m in Sources */,
 				BC482A591B5CF114009C09DE /* sidebardemo.xcdatamodeld in Sources */,
@@ -865,8 +874,7 @@
 				BC482A581B5CF114009C09DE /* sidebardemo.xcdatamodel */,
 			);
 			currentVersion = BC482A581B5CF114009C09DE /* sidebardemo.xcdatamodel */;
-			name = sidebardemo.xcdatamodeld;
-			path = sidebardemo/sidebardemo.xcdatamodeld;
+			path = sidebardemo.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};

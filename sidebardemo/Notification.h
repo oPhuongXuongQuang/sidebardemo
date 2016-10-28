@@ -19,5 +19,7 @@
 - (id) initWithId:(NSString *)aId content:(NSString *)aContent link:(NSString *)aLink image:(NSString*) img time:(NSString *) aTime;
 
 + (NSArray *)notiFromJSON:(NSData *)data error:(NSError **)error;
++ (Notification *)notiFromData:(NSData *)data error:(NSError **)error;
++ (NSString *)generateDateStringWithEpoch:(NSString *)epoch;
 
 @end

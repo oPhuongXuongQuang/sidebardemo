@@ -6,6 +6,7 @@ target 'sidebar-demo' do
   # use_frameworks!
   pod 'Firebase/Core'
   pod 'Firebase/Messaging'
+  pod 'CRToast', '~> 0.0.7'
   # Pods for sidebar-demo
 
   target 'sidebar-demoTests' do

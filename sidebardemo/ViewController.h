@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "NhapItem.h"
 
 @interface ViewController : UIViewController<UITextFieldDelegate,UIWebViewDelegate,UIScrollViewDelegate>{
     NSString *userName;
@@ -17,8 +16,6 @@
 @property NSInteger selectedIndex;
 
 @property (weak, nonatomic) IBOutlet UIToolbar *toolBar;
-
-- (void)shareAction;
 
 @end
  

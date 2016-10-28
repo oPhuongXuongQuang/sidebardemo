@@ -4,6 +4,11 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>CRToast.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>GoogleToolboxForMac.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -27,12 +32,17 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>B800FD675250D5E175A9377B8456C387</key>
+		<key>7112751ACED56349A420B879DDAD76F8</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>D6FCCCCE731553928B5A27155F88AD63</key>
+		<key>86193E524C8D4F71793799B876CE2F61</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B800FD675250D5E175A9377B8456C387</key>
 		<dict>
 			<key>primary</key>
 			<true/>

@@ -9,6 +9,9 @@
 #import "AppDelegate.h"
 #import "SWRevealViewController.h"
 #import "ViewController.h"
+#import "AGPushNoteView.h"
+#import "Notification.h"
+#import "NewsDetailViewController.h"
 
 @import Firebase;
 @import UIKit;
@@ -94,39 +97,38 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     // If you are receiving a notification message while your app is in the background,
     // this callback will not be fired till the user taps on the notification launching the application.
     // TODO: Handle data of notification
-    
     // Print message ID.
     NSLog(@"Message ID: %@", userInfo[@"gcm.message_id"]);
-    
-    // Print full message.
-    NSLog(@"%@", userInfo);
-    
-    
-    if(application.applicationState == UIApplicationStateInactive) {
+    NSString *message64 = [NSString stringWithFormat:@"%@", [userInfo valueForKey:@"news"]];
+    NSData *data = [[NSData alloc] initWithBase64EncodedString:message64 options:0];
+    NSError *error;
+    Notification *notiObj = [Notification notiFromData:data error:&error];
+    if(application.applicationState == UIApplicationStateInactive ||
+       application.applicationState == UIApplicationStateBackground) {
+        NSLog(@"Message in non-Active %@", userInfo);
         
-        NSLog(@"Inactive");
-        
-        //Show the view with the content of the push
-        
-        completionHandler(UIBackgroundFetchResultNewData);
-        
-    } else if (application.applicationState == UIApplicationStateBackground) {
-        
-        NSLog(@"Background");
-        
-        //Refresh the local model
-        
-        completionHandler(UIBackgroundFetchResultNewData);
-        
+        // Show noti data
+        NSDictionary *notiDict = [NSDictionary dictionaryWithObject:notiObj forKey:@"notiDict"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DisplayNewsNoti" object:notiDict];
     } else {
-        
-        NSLog(@"Active");
+        NSLog(@"Message in Active %@", userInfo);
         
         //Show an in-app banner
-        
         completionHandler(UIBackgroundFetchResultNewData);
-        
+        if (notiObj != nil) {
+            [AGPushNoteView showWithNotificationMessage:notiObj.noti_content];
+            [AGPushNoteView setMessageAction:^(NSString *message) {
+                NSDictionary *notiDict = [NSDictionary dictionaryWithObject:notiObj forKey:@"notiDict"];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"DisplayNewsNoti" object:notiDict];
+            }];
+        }
     }
+    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+    localNotification.userInfo = userInfo;
+    localNotification.soundName = UILocalNotificationDefaultSoundName;
+    localNotification.alertBody = notiObj.noti_content;
+    localNotification.fireDate = [NSDate date];
+    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
 }
 
 // Receive displayed notifications for iOS 10 devices.
@@ -139,15 +141,47 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     NSLog(@"Message ID: %@", userInfo[@"gcm.message_id"]);
     
     // Print full message.
-    NSLog(@"%@", userInfo);
+    NSLog(@"IOS10: %@", userInfo);
     
+    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+    localNotification.userInfo = userInfo;
+    localNotification.soundName = UILocalNotificationDefaultSoundName;
+    localNotification.alertBody = [NSString stringWithFormat:@"%@", userInfo];
+    localNotification.fireDate = [NSDate date];
+    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+    
+    [AGPushNoteView showWithNotificationMessage:@"John Doe sent you a message!"];
+    
+}
+
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)())completionHandler __IOS_AVAILABLE(10.0)
+{
+    NSDictionary *userInfo = response.notification.request.content.userInfo;
+    NSLog(@"Message ID: %@", userInfo[@"gcm.message_id"]);
+    NSLog(@"Message in Active %@", userInfo);
+    
+    //Show an in-app banner
+    
+    completionHandler(UNNotificationPresentationOptionBadge);
+    
+    NSString *messageBody = [NSString stringWithFormat:@"%@", [userInfo valueForKey:@"news"]];
+    
+    UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+    localNotification.userInfo = userInfo;
+    localNotification.soundName = UILocalNotificationDefaultSoundName;
+    localNotification.alertBody = messageBody;
+    localNotification.fireDate = [NSDate date];
+    [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+    
+    [AGPushNoteView showWithNotificationMessage:messageBody];
     
 }
 
 // Receive data message on iOS 10 devices.
 - (void)applicationReceivedRemoteMessage:(FIRMessagingRemoteMessage *)remoteMessage {
     // Print full message
-    NSLog(@"%@", [remoteMessage appData]);
+    NSLog(@"IOS10 %@", [remoteMessage appData]);
+    
 }
 #endif
 

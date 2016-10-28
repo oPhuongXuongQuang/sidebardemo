@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '86193E524C8D4F71793799B876CE2F61'
-               BlueprintName = 'Pods-sidebar-demo'
+               BlueprintIdentifier = '7112751ACED56349A420B879DDAD76F8'
+               BlueprintName = 'CRToast'
                ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'libPods-sidebar-demo.a'>
+               BuildableName = 'libCRToast.a'>
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

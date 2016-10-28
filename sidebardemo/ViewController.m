@@ -13,6 +13,7 @@
 #import "SidebarViewController.h"
 #import "Reachability.h"
 #import "WTGlyphFontSet.h"
+#import "NewsDetailViewController.h"
 
 @interface ViewController(){
     UIWebView* _webView;
@@ -77,7 +78,7 @@
     if (currentAddress != nil) {
         [addressBar setText:currentAddress];
     } else {
-//        [addressBar setText:@"http://hmtmoda.com/"];
+        [addressBar setText:@"http://hmtmoda.com/"];
     }
     [addressBar setTag:0];
     addressBar.delegate = self;
@@ -113,6 +114,8 @@
     _webView.scrollView.delegate = self;
     
     _webView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayNewsNoti:) name:@"DisplayNewsNoti" object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -250,6 +253,17 @@
     menuButton.badgeBGColor = [UIColor orangeColor];
     menuButton.badgeOriginX = 33.5;
     [UIView commitAnimations];
+}
+
+- (void)displayNewsNoti:(NSNotification *)notification
+{
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+    NewsDetailViewController *newsDetailViewController = (NewsDetailViewController *)[storyboard instantiateViewControllerWithIdentifier:@"newsDetailController"];
+    NSDictionary *notiDict = (NSDictionary *)notification.object;
+    Notification *notiObj = [notiDict objectForKey:@"notiDict"];
+    newsDetailViewController.noti = notiObj;
+    UINavigationController *navBar=[[UINavigationController alloc]initWithRootViewController:newsDetailViewController];
+    [self presentViewController:navBar animated:YES completion:nil];
 }
 
 @end

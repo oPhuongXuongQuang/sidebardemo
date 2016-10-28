@@ -10,7 +10,6 @@
 #import "SWRevealViewController.h"
 #import "ViewController.h"
 #import "TableCell.h"
-#import "NhapItem.h"
 #import "Notification.h"
 
 #define kDeviceId 11111
@@ -100,29 +99,7 @@
     Notification *notiObj = [self.notiList objectAtIndex:indexPath.row];
     
     cell.nhapName.text = notiObj.noti_content;
-    NSTimeInterval seconds = [notiObj.noti_time doubleValue];
-    NSDate *epochNSDate = [[NSDate alloc] initWithTimeIntervalSince1970:seconds];
-    
-    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-    NSCalendar* calender = [NSCalendar currentCalendar];
-    NSDateComponents* today = [calender components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:[NSDate date]];
-    NSDateComponents* currentDate = [calender components:NSCalendarUnitYear|NSCalendarUnitMonth|NSCalendarUnitDay fromDate:epochNSDate];
-    NSString *dayPrefix = @"";
-    if([today year] == [currentDate year] && [today month] == [currentDate month]){
-        NSInteger diff = ([today day] - [currentDate day]);
-        if(diff < 1){
-            [dateFormat setDateFormat:@"hh:mm a"];
-            dayPrefix = @"Today ";
-        } else if(diff >= 1 || diff < 2){
-            [dateFormat setDateFormat:@"hh:mm a"];
-            dayPrefix = @"Yesterday ";
-        } else {
-            [dateFormat setDateFormat:@"dd/MM/yyyy hh:mm a"];
-        }
-    } else {
-        [dateFormat setDateFormat:@"dd/MM/yyyy hh:mm a"];
-    }
-    cell.createDate.text = [dayPrefix stringByAppendingString:[dateFormat stringFromDate:epochNSDate]];
+    cell.createDate.text = [Notification generateDateStringWithEpoch: notiObj.noti_time];
     if (![notiObj.noti_img isKindOfClass:[NSNull class]] && ![notiObj.noti_img  isEqual: @""] && ![notiObj.noti_img  isEqual: @"null"]) {
         
         NSURL *url = [NSURL URLWithString:notiObj.noti_img];
