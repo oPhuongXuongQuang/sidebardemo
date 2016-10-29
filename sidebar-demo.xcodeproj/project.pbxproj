@@ -65,7 +65,7 @@
 		7736472C1B677D0000E54B6D /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		7736472D1B677D0000E54B6D /* vi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = vi; path = vi.lproj/Localizable.strings; sourceTree = "<group>"; };
 		77A183991B79A4E10040AB4D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
-		77B81ABF1B4FD6E4003908E1 /* sidebardemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = sidebardemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		77B81ABF1B4FD6E4003908E1 /* HMT Moda.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "HMT Moda.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		77B81AC31B4FD6E4003908E1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		77B81AC41B4FD6E4003908E1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		77B81AC61B4FD6E4003908E1 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -187,7 +187,7 @@
 		77B81AC01B4FD6E4003908E1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				77B81ABF1B4FD6E4003908E1 /* sidebardemo.app */,
+				77B81ABF1B4FD6E4003908E1 /* HMT Moda.app */,
 				77B81AD81B4FD6E4003908E1 /* sidebar-demoTests.xctest */,
 			);
 			name = Products;
@@ -375,7 +375,7 @@
 			);
 			name = "sidebar-demo";
 			productName = sidebardemo;
-			productReference = 77B81ABF1B4FD6E4003908E1 /* sidebardemo.app */;
+			productReference = 77B81ABF1B4FD6E4003908E1 /* HMT Moda.app */;
 			productType = "com.apple.product-type.application";
 		};
 		77B81AD71B4FD6E4003908E1 /* sidebar-demoTests */ = {
@@ -765,8 +765,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.notidemo;
-				PRODUCT_MODULE_NAME = sidebardemo;
-				PRODUCT_NAME = sidebardemo;
+				PRODUCT_MODULE_NAME = "HMT Moda";
+				PRODUCT_NAME = "HMT Moda";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
@@ -789,8 +789,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.notidemo;
-				PRODUCT_MODULE_NAME = sidebardemo;
-				PRODUCT_NAME = sidebardemo;
+				PRODUCT_MODULE_NAME = "HMT Moda";
+				PRODUCT_NAME = "HMT Moda";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;

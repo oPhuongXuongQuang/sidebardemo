@@ -66,11 +66,6 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    SWRevealViewController *revealController = [[SWRevealViewController alloc] init];
-    [self presentViewController:revealController animated:YES completion:nil];
-}
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

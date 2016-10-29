@@ -16,36 +16,76 @@
 #import "NewsDetailViewController.h"
 
 @interface ViewController(){
-    UIWebView* _webView;
-    NSMutableArray *barItems;
-    UIColor *tintColor;
+    WKWebView *_wkWebView;
     UIBarButtonItem *menuButton;
     UITextField *addressBar;
+    UIView *loadingView;
 }
 
-- (void)loadWebOnline;
-
-@property BOOL isKeyboardShowing;
-@property (strong, nonatomic) UIScrollView *scrollView;
+- (void)loadWebView;
 
 @end
 
 @implementation ViewController
-
-@synthesize toolBar;
 @synthesize selectedIndex;
 @synthesize currentAddress;
 
+#pragma mark - ViewController delegate
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    menuButton = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"bell.png"] style:UIBarButtonItemStylePlain target:nil action:nil];
+    // Init custom layout
+    [self initSidebar];
+    [self initNotificationBadge];
+    [self initAddressBar];
+    [self initRefreshButton];
+    [self initWKWebView];
+    [self initLoadingIndicator];
+    // Avoid status bar and navigation bar overlap
+    if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+    
+    // Common function
+    [self loadWebView];
+    
+    // Post notification
+    NSDictionary* userInfo = @{@"index": @(selectedIndex)};
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"SetMainViewAddressBar" object:self userInfo:userInfo];
+    if (selectedIndex == -2) {
+        SidebarViewController *sideBar = (SidebarViewController *)self.revealViewController.rearViewController;
+        sideBar.nhapIndexOnMainView = -2;
+    }
+    
+    // Add observer notification
+    [addressBar addTarget:self action:@selector(addressBarActive) forControlEvents:UIControlEventEditingDidBegin];
+    [addressBar addTarget:self action:@selector(addressBarEndActive) forControlEvents:UIControlEventEditingDidEnd];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(toggleView:) name:@"ToggleTheMenuView" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayNewsNoti:) name:@"DisplayNewsNoti" object:nil];
+}
 
-    self.navigationItem.leftBarButtonItem = menuButton;
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    CGRect screenBound = self.view.bounds;
+    _wkWebView.frame = CGRectMake(screenBound.origin.x, screenBound.origin.y, screenBound.size.width, screenBound.size.height);
+}
+
+- (void)willAnimateRotationToInterfaceOrientation: (UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+    CGRect screenBound = self.view.bounds;
+    _wkWebView.frame = CGRectMake(screenBound.origin.x, screenBound.origin.y, screenBound.size.width, screenBound.size.height);
+}
+
+#pragma mark - WKWebView delegate
+- (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation {
+    [loadingView setHidden:YES];
+}
+
+#pragma mark - Custom layout
+- (void)initSidebar
+{
+    menuButton = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"bell.png"] style:UIBarButtonItemStylePlain target:nil action:nil];
     
-    [self createBadge];
-    
-    tintColor = [UIColor colorWithRed:0.11 green:0.525 blue:0.976 alpha:1];
+    UIColor *tintColor = [UIColor colorWithRed:0.11 green:0.525 blue:0.976 alpha:1];
     [menuButton setTintColor:tintColor];
     //Add sidebar effect
     SWRevealViewController *revealViewController = self.revealViewController;
@@ -54,8 +94,24 @@
         [menuButton setTarget: self.revealViewController];
         [menuButton setAction: @selector( revealToggle:)];
         [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
-    }    
-    
+    }
+    self.navigationItem.leftBarButtonItem = menuButton;
+}
+
+- (void)initNotificationBadge
+{
+    /* Badge for notification */
+    [UIView setAnimationDuration:0.5];
+    [UIView setAnimationDelay:1.0];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+    menuButton.badgeValue = [NSString stringWithFormat:@"%d", 3];
+    menuButton.badgeBGColor = [UIColor orangeColor];
+    menuButton.badgeOriginX = 33.5;
+    [UIView commitAnimations];
+}
+
+- (void)initAddressBar
+{
     CGRect screenBound = self.view.bounds;
     CGFloat widthForTextField = screenBound.size.width * 0.5;
     CGFloat heightForTextField;
@@ -83,50 +139,24 @@
     [addressBar setTag:0];
     addressBar.delegate = self;
     
-    // Add refresh button
-    [self addRefreshButton];
-    
-    _webView = [[UIWebView alloc] init];
-    _webView.frame = CGRectMake(screenBound.origin.x, screenBound.origin.y, screenBound.size.width, screenBound.size.height);
-    _webView.delegate = self;
-    [self loadWebOnline];
-    
-    [_webView setUserInteractionEnabled: YES];
-    [self.view addSubview:_webView];
-    
-    
-    [addressBar addTarget:self action:@selector(addressBarActive) forControlEvents:UIControlEventEditingDidBegin];
-    [addressBar addTarget:self action:@selector(addressBarEndActive) forControlEvents:UIControlEventEditingDidEnd];
     [self.navigationItem.titleView setNeedsLayout];
     [self.navigationItem.titleView setNeedsDisplay];
     [self.navigationItem.titleView setNeedsUpdateConstraints];
     self.navigationItem.titleView = addressBar;
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(toggleView:) name:@"ToggleTheMenuView" object:nil];
-    
-    NSDictionary* userInfo = @{@"index": @(selectedIndex)};
-    [[NSNotificationCenter defaultCenter]postNotificationName:@"SetMainViewAddressBar" object:self userInfo:userInfo];
-    if (selectedIndex == -2) {
-        SidebarViewController *sideBar = (SidebarViewController *)self.revealViewController.rearViewController;
-        sideBar.nhapIndexOnMainView = -2;
-    }
-    
-    _webView.scrollView.delegate = self;
-    
-    _webView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayNewsNoti:) name:@"DisplayNewsNoti" object:nil];
 }
 
-- (void)viewWillAppear:(BOOL)animated{
-    [self addKeyboardNotifications];
+- (void)initWKWebView
+{
+    CGRect screenBound = self.view.bounds;
+    _wkWebView = [[WKWebView alloc] init];
+    _wkWebView.frame = CGRectMake(screenBound.origin.x, screenBound.origin.y, screenBound.size.width, screenBound.size.height);
+    _wkWebView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    _wkWebView.navigationDelegate = self;
+    [_wkWebView setUserInteractionEnabled: YES];
+    [self.view addSubview:_wkWebView];
 }
 
-- (void)viewWillDisappear:(BOOL)animated{
-    [self removeKeyboardNotifications];
-}
-
-- (void)addRefreshButton
+- (void)initRefreshButton
 {
     addressBar.rightView = nil;
     CGFloat widthForButton = addressBar.frame.size.width * 0.15;
@@ -146,70 +176,35 @@
     addressBar.rightViewMode = UITextFieldViewModeUnlessEditing;
 }
 
+- (void)initLoadingIndicator
+{
+    loadingView = [[UIView alloc]initWithFrame:CGRectMake(100, 400, 80, 80)];
+    loadingView.center = _wkWebView.center;
+    loadingView.backgroundColor = [UIColor colorWithWhite:0. alpha:0.6];
+    loadingView.layer.cornerRadius = 5;
+    
+    UIActivityIndicatorView *activityView=[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    activityView.center = CGPointMake(loadingView.frame.size.width / 2.0, 35);
+    [activityView startAnimating];
+    activityView.tag = 100;
+    [loadingView addSubview:activityView];
+    
+    UILabel* lblLoading = [[UILabel alloc]initWithFrame:CGRectMake(0, 48, 80, 30)];
+    lblLoading.text = @"Loading...";
+    lblLoading.textColor = [UIColor whiteColor];
+    lblLoading.font = [UIFont fontWithName:lblLoading.font.fontName size:15];
+    lblLoading.textAlignment = NSTextAlignmentCenter;
+    [loadingView addSubview:lblLoading];
+    
+    [self.view addSubview:loadingView];
+}
+
+#pragma mark - Custom layout action
 - (void)refreshAction:(UIButton *)sender
 {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-        [_webView reload];
+        [_wkWebView reload];
     });
-}
-
-- (void)toggleView:(NSNotification *)notification
-{
-    SWRevealViewController *revealViewController = self.revealViewController;
-    [revealViewController revealToggle:self];
-}
-
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
-{
-    CGRect screenBound = self.view.bounds;
-    _webView.frame = CGRectMake(screenBound.origin.x, screenBound.origin.y, screenBound.size.width, screenBound.size.height);
-}
-
-- (void)willAnimateRotationToInterfaceOrientation: (UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
-{
-    CGRect screenBound = self.view.bounds;
-    _webView.frame = CGRectMake(screenBound.origin.x, screenBound.origin.y, screenBound.size.width, screenBound.size.height);
-}
-
-- (void)viewDidAppear:(BOOL)animated{
-    [super viewDidAppear:animated];
-}
-
-- (void)viewDidDisappear:(BOOL)animated{
-}
-
-- (void)webViewDidFinishLoad:(UIWebView *)webView
-{
-}
-
-- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
-{
-}
-
-- (void)loadWebOnline
-{
-    NSURLRequest *requestObj = [NSURLRequest requestWithURL:[NSURL URLWithString:addressBar.text]];
-    
-    [_webView loadRequest:requestObj];
-}
-
-//call this from viewWillAppear
--(void)addKeyboardNotifications
-{
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardDidShow:)
-                                                 name:UIKeyboardWillShowNotification
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardDidHide:)
-                                                 name:UIKeyboardWillHideNotification
-                                               object:nil];
-}
-//call this from viewWillDisappear
-- (void)removeKeyboardNotifications{
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 }
 
 - (BOOL)addressBarActive{
@@ -226,14 +221,6 @@
     return YES;
 }
 
-- (void)keyboardDidShow:(NSNotification*)aNotification{
-    _isKeyboardShowing = YES;
-}
-
-- (void)keyboardDidHide:(NSNotification*)aNotification{
-    _isKeyboardShowing = NO;
-}
-
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     if(textField.tag == 1)
@@ -243,16 +230,26 @@
     return YES;
 }
 
-- (void)createBadge
+#pragma mark - Common function
+- (void)loadWebView
 {
-    /* Badge for notification */
-    [UIView setAnimationDuration:0.5];
-    [UIView setAnimationDelay:1.0];
-    [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
-    menuButton.badgeValue = [NSString stringWithFormat:@"%d", 3];
-    menuButton.badgeBGColor = [UIColor orangeColor];
-    menuButton.badgeOriginX = 33.5;
-    [UIView commitAnimations];
+    NSURLRequest *requestObj = [NSURLRequest requestWithURL:[NSURL URLWithString:addressBar.text]];
+    
+    [_wkWebView loadRequest:requestObj];
+    [loadingView setHidden:NO];
+}
+
+#pragma mark - Notification observation
+- (void)toggleView:(NSNotification *)notification
+{
+    SWRevealViewController *revealViewController = self.revealViewController;
+    [revealViewController revealToggle:self];
+    
+    NSString *link = notification.object;
+    if (link != nil) {
+        [addressBar setText:link];
+        [self loadWebView];
+    }
 }
 
 - (void)displayNewsNoti:(NSNotification *)notification

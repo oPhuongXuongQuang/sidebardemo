@@ -41,15 +41,18 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setMainViewNhapName:) name:@"SetMainViewAddressBar" object:nil];
     
+    // Avoid status bar and navigation bar overlap
+    self.edgesForExtendedLayout = UIRectEdgeNone;
+    
     //Add long press event
 //    UILongPressGestureRecognizer* longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(onLongPress:)];
 //    [self.tableView addGestureRecognizer:longPressRecognizer];
-//    
-//    UITapGestureRecognizer *doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onDoubleTap:)];
-//    doubleTapRecognizer.numberOfTapsRequired = 2;
-//    doubleTapRecognizer.numberOfTouchesRequired = 1;
-//    [self.tableView addGestureRecognizer:doubleTapRecognizer];
-//    
+
+    UITapGestureRecognizer *doubleTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onDoubleTap:)];
+    doubleTapRecognizer.numberOfTapsRequired = 2;
+    doubleTapRecognizer.numberOfTouchesRequired = 1;
+    [self.tableView addGestureRecognizer:doubleTapRecognizer];
+
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -126,7 +129,7 @@
     }
     else {
         _index = indexPath.row;
-        [self performSegueWithIdentifier:@"reloadWebview" sender:noti.noti_link];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ToggleTheMenuView" object:noti.noti_link];
     }
 }
 
@@ -158,7 +161,7 @@
         
         Notification *noti = [self.notiList objectAtIndex:indexPath.row];
         _index = indexPath.row;
-        [self performSegueWithIdentifier:@"reloadWebview" sender:noti.noti_link];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"ToggleTheMenuView" object:noti.noti_link];
     }
 }
 
@@ -199,19 +202,9 @@
 # pragma mark - NotificationDelegate
 - (void)didReceiveNotification:(NSNotification *)notification
 {
-    NSLog(@"Hello");
     NSDictionary *dataDict= (NSDictionary *)notification.object;
     self.notiList = (NSArray *) dataDict[@"notis"];
     [self.tableView reloadData];
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-    if([segue.identifier isEqualToString:@"reloadWebview"]){
-        UINavigationController *navCon = segue.destinationViewController;
-        ViewController *viewController = [navCon viewControllers][0];
-        viewController.selectedIndex = _index;
-        viewController.currentAddress = sender;
-    }
 }
 
 @end

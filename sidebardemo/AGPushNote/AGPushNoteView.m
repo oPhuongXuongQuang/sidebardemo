@@ -99,8 +99,10 @@ static AGPushNoteView *_sharedPushView;
     self.exclusiveTouch = YES;
     
     UITapGestureRecognizer *msgTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(messageTapAction)];
+    self.messageLabel.frame = CGRectMake(self.messageLabel.frame.origin.x, self.messageLabel.frame.origin.y, self.frame.size.width * 0.75, self.messageLabel.frame.size.height);
     self.messageLabel.userInteractionEnabled = YES;
     [self.messageLabel addGestureRecognizer:msgTap];
+    [self addGestureRecognizer:msgTap];
     
     //:::[For debugging]:::
     //            self.containerView.backgroundColor = [UIColor yellowColor];
@@ -130,6 +132,7 @@ static AGPushNoteView *_sharedPushView;
         [PUSH_VIEW.pendingPushArr addObject:message];
         
         PUSH_VIEW.messageLabel.text = message;
+        
         APP.window.windowLevel = UIWindowLevelStatusBar;
         
         CGRect f = PUSH_VIEW.frame;

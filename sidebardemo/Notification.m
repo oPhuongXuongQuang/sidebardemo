@@ -70,7 +70,7 @@
 
 + (NSString *)generateDateStringWithEpoch:(NSString *)epoch
 {
-    NSTimeInterval seconds = [epoch doubleValue];
+    NSTimeInterval seconds = [epoch doubleValue] / 1000;
     NSDate *epochNSDate = [[NSDate alloc] initWithTimeIntervalSince1970:seconds];
     
     NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
@@ -83,14 +83,14 @@
         if(diff < 1){
             [dateFormat setDateFormat:@"hh:mm a"];
             dayPrefix = @"Today ";
-        } else if(diff >= 1 || diff < 2){
+        } else if(diff >= 1 && diff < 2){
             [dateFormat setDateFormat:@"hh:mm a"];
             dayPrefix = @"Yesterday ";
         } else {
-            [dateFormat setDateFormat:@"dd/MM/yyyy hh:mm a"];
+            [dateFormat setDateFormat:@"dd/MM/YYYY hh:mm a"];
         }
     } else {
-        [dateFormat setDateFormat:@"dd/MM/yyyy hh:mm a"];
+        [dateFormat setDateFormat:@"dd/MM/YYYY hh:mm a"];
     }
     return [dayPrefix stringByAppendingString:[dateFormat stringFromDate:epochNSDate]];
 }

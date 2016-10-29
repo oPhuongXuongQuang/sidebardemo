@@ -734,6 +734,7 @@ const int FrontViewPositionNone = 0xff;
     
     // now set the desired initial position
     [self _setFrontViewPosition:initialPosition withDuration:0.0];
+    
 }
 
 

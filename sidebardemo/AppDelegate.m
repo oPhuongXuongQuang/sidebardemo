@@ -100,35 +100,47 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     // Print message ID.
     NSLog(@"Message ID: %@", userInfo[@"gcm.message_id"]);
     NSString *message64 = [NSString stringWithFormat:@"%@", [userInfo valueForKey:@"news"]];
-    NSData *data = [[NSData alloc] initWithBase64EncodedString:message64 options:0];
-    NSError *error;
-    Notification *notiObj = [Notification notiFromData:data error:&error];
-    if(application.applicationState == UIApplicationStateInactive ||
-       application.applicationState == UIApplicationStateBackground) {
-        NSLog(@"Message in non-Active %@", userInfo);
-        
-        // Show noti data
-        NSDictionary *notiDict = [NSDictionary dictionaryWithObject:notiObj forKey:@"notiDict"];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"DisplayNewsNoti" object:notiDict];
+    Notification *notiObj = nil;
+    if ([message64 isEqual:@"(null)"]) {
+        if(application.applicationState == UIApplicationStateActive) {
+            [AGPushNoteView showWithNotificationMessage:[NSString stringWithFormat:@"Data Error"]];
+        }
     } else {
-        NSLog(@"Message in Active %@", userInfo);
-        
-        //Show an in-app banner
-        completionHandler(UIBackgroundFetchResultNewData);
-        if (notiObj != nil) {
-            [AGPushNoteView showWithNotificationMessage:notiObj.noti_content];
-            [AGPushNoteView setMessageAction:^(NSString *message) {
-                NSDictionary *notiDict = [NSDictionary dictionaryWithObject:notiObj forKey:@"notiDict"];
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"DisplayNewsNoti" object:notiDict];
-            }];
+        NSData *data = [[NSData alloc] initWithBase64EncodedString:message64 options:0];
+        NSError *error;
+        notiObj = [Notification notiFromData:data error:&error];
+        if(application.applicationState == UIApplicationStateInactive ||
+           application.applicationState == UIApplicationStateBackground) {
+            NSLog(@"Message in non-Active %@", userInfo);
+            
+            // Show noti data
+            NSDictionary *notiDict = [NSDictionary dictionaryWithObject:notiObj forKey:@"notiDict"];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"DisplayNewsNoti" object:notiDict];
+        } else {
+            NSLog(@"Message in Active %@", userInfo);
+            
+            //Show an in-app banner
+            completionHandler(UIBackgroundFetchResultNewData);
+            if (notiObj != nil) {
+                [AGPushNoteView showWithNotificationMessage:notiObj.noti_content];
+                [AGPushNoteView setMessageAction:^(NSString *message) {
+                    NSDictionary *notiDict = [NSDictionary dictionaryWithObject:notiObj forKey:@"notiDict"];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"DisplayNewsNoti" object:notiDict];
+                }];
+            }
         }
     }
     UILocalNotification *localNotification = [[UILocalNotification alloc] init];
     localNotification.userInfo = userInfo;
     localNotification.soundName = UILocalNotificationDefaultSoundName;
-    localNotification.alertBody = notiObj.noti_content;
+    if (![notiObj isEqual:nil]) {
+        localNotification.alertBody = notiObj.noti_content;
+    } else {
+        localNotification.alertBody = @"";
+    }
     localNotification.fireDate = [NSDate date];
     [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
+    
 }
 
 // Receive displayed notifications for iOS 10 devices.
@@ -189,7 +201,7 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
 {
     NSString *tokenChars = [[NSString alloc] initWithData:deviceToken encoding:NSUTF8StringEncoding];
     
-    NSLog(@"DM day la token: %@", tokenChars);
+    NSLog(@"Device token: %@", tokenChars);
     [FIRInstanceID.instanceID setAPNSToken:deviceToken type:FIRInstanceIDAPNSTokenTypeSandbox];
 }
 

@@ -7,15 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+@import WebKit;
 
-@interface ViewController : UIViewController<UITextFieldDelegate,UIWebViewDelegate,UIScrollViewDelegate>{
-    NSString *userName;
-}
+@interface ViewController : UIViewController<UITextFieldDelegate,UIScrollViewDelegate,WKNavigationDelegate>
 
 @property (nonatomic, strong) NSString *currentAddress;
 @property NSInteger selectedIndex;
-
-@property (weak, nonatomic) IBOutlet UIToolbar *toolBar;
 
 @end
  

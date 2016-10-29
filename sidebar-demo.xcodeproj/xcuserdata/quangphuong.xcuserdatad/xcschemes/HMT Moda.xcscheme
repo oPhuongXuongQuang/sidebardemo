@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "77B81ABE1B4FD6E4003908E1"
-               BuildableName = "sidebardemo.app"
+               BuildableName = "HTM Moda.app"
                BlueprintName = "sidebar-demo"
                ReferencedContainer = "container:sidebar-demo.xcodeproj">
             </BuildableReference>
@@ -43,7 +43,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "77B81ABE1B4FD6E4003908E1"
-            BuildableName = "sidebardemo.app"
+            BuildableName = "HTM Moda.app"
             BlueprintName = "sidebar-demo"
             ReferencedContainer = "container:sidebar-demo.xcodeproj">
          </BuildableReference>
@@ -66,7 +66,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "77B81ABE1B4FD6E4003908E1"
-            BuildableName = "sidebardemo.app"
+            BuildableName = "HTM Moda.app"
             BlueprintName = "sidebar-demo"
             ReferencedContainer = "container:sidebar-demo.xcodeproj">
          </BuildableReference>
@@ -92,7 +92,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "77B81ABE1B4FD6E4003908E1"
-            BuildableName = "sidebardemo.app"
+            BuildableName = "HTM Moda.app"
             BlueprintName = "sidebar-demo"
             ReferencedContainer = "container:sidebar-demo.xcodeproj">
          </BuildableReference>
