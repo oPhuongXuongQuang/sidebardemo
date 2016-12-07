@@ -33,7 +33,7 @@
     _newsManager = [[NewsManager alloc] init];
     self.notiList = [[NSMutableArray alloc]init];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchNewsNotification:) name:@"FetchNewsNotification" object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(fetchNewsNotification:) name:@"FetchNewsNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNotification:) name:@"ReceiveNewsNotification" object:nil];
     nhapIndexOnMainView = -1;
     
@@ -62,9 +62,10 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"FetchNewsNotification" object:nil];
-    });
+//    dispatch_async(dispatch_get_main_queue(), ^{
+////        [[NSNotificationCenter defaultCenter] postNotificationName:@"FetchNewsNotification" object:nil];
+//        [_newsManager fetchNewsByDeviceId:kDeviceId deviceName:kDeviceName page:kPage];
+//    });
 }
 
 - (void)didReceiveMemoryWarning {

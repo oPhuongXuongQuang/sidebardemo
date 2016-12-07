@@ -12,9 +12,11 @@
 #import "AGPushNoteView.h"
 #import "Notification.h"
 #import "NewsDetailViewController.h"
+#import "NewsManager.h"
 
 @import Firebase;
 @import UIKit;
+@import AudioToolbox;
 
 @interface AppDelegate ()
 
@@ -66,7 +68,7 @@
     // time. So if you need to retrieve the token as soon as it is available this is where that
     // should be done.
     NSString *refreshedToken = [[FIRInstanceID instanceID] token];
-    NSLog(@"InstanceID token: %@", refreshedToken);
+    NSLog(@"New InstanceID token: %@", refreshedToken);
     
     // Connect to FCM since connection may have failed when attempted before having a token.
     [self connectToFcm];
@@ -88,6 +90,7 @@
         }
         NSString *refreshedToken = [[FIRInstanceID instanceID] token];
         NSLog(@"InstanceID token: %@", refreshedToken);
+        [NewsManager registerOnServerWithToken:refreshedToken deviceId:refreshedToken deviceName:@"IOS"];
     }];
 }
 
@@ -126,10 +129,13 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
                 [AGPushNoteView setMessageAction:^(NSString *message) {
                     NSDictionary *notiDict = [NSDictionary dictionaryWithObject:notiObj forKey:@"notiDict"];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"DisplayNewsNoti" object:notiDict];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateBadge" object:self userInfo:nil];
                 }];
+                
             }
         }
     }
+    AudioServicesPlaySystemSound(1000);
     UILocalNotification *localNotification = [[UILocalNotification alloc] init];
     localNotification.userInfo = userInfo;
     localNotification.soundName = UILocalNotificationDefaultSoundName;
@@ -140,7 +146,7 @@ fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     }
     localNotification.fireDate = [NSDate date];
     [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
-    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"UpdateBadge" object:self userInfo:nil];
 }
 
 // Receive displayed notifications for iOS 10 devices.

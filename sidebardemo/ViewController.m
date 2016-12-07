@@ -14,12 +14,19 @@
 #import "Reachability.h"
 #import "WTGlyphFontSet.h"
 #import "NewsDetailViewController.h"
+#import "NewsManager.h"
+
+#define kDeviceId 11111
+#define kDeviceName @"IOS"
+#define kPage 0
 
 @interface ViewController(){
     WKWebView *_wkWebView;
     UIBarButtonItem *menuButton;
-    UITextField *addressBar;
+//    UIButton *addressBar;
+    UIBarButtonItem *addressBar;
     UIView *loadingView;
+    NewsManager *_newsManager;
 }
 
 - (void)loadWebView;
@@ -35,10 +42,12 @@
     [super viewDidLoad];
     
     // Init custom layout
+    [self initNavigationBar];
     [self initSidebar];
     [self initNotificationBadge];
     [self initAddressBar];
-    [self initRefreshButton];
+//    [self initRefreshButton];
+    
     [self initWKWebView];
     [self initLoadingIndicator];
     // Avoid status bar and navigation bar overlap
@@ -46,7 +55,8 @@
         self.edgesForExtendedLayout = UIRectEdgeNone;
     
     // Common function
-    [self loadWebView];
+//    [self loadWebView];
+    [self goToHome];
     
     // Post notification
     NSDictionary* userInfo = @{@"index": @(selectedIndex)};
@@ -57,11 +67,29 @@
     }
     
     // Add observer notification
-    [addressBar addTarget:self action:@selector(addressBarActive) forControlEvents:UIControlEventEditingDidBegin];
-    [addressBar addTarget:self action:@selector(addressBarEndActive) forControlEvents:UIControlEventEditingDidEnd];
+//    [addressBar addTarget:self action:@selector(addressBarActive) forControlEvents:UIControlEventEditingDidBegin];
+//    [addressBar addTarget:self action:@selector(addressBarEndActive) forControlEvents:UIControlEventEditingDidEnd];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(toggleView:) name:@"ToggleTheMenuView" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayNewsNoti:) name:@"DisplayNewsNoti" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateBadge:) name:@"UpdateBadge" object:nil];
+    
+    _newsManager = [[NewsManager alloc] init];
+    
+//    [self performSelectorInBackground:@selector(fetch) withObject:nil];
+    
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        NSString *isInit = @"true";
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"FetchNewsNotification" object:isInit];
+        [_newsManager fetchNewsByDeviceId:kDeviceId deviceName:kDeviceName page:kPage];
+    });
 }
+
+//- (void)fetch
+//{
+//    //    [[NSNotificationCenter defaultCenter] postNotificationName:@"FetchNewsNotification" object:nil];
+//    [_newsManager fetchNewsByDeviceId:kDeviceId deviceName:kDeviceName page:kPage];
+//}
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
@@ -81,21 +109,52 @@
 }
 
 #pragma mark - Custom layout
+- (void)initNavigationBar
+{
+    NSString *logoName;
+    if([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        logoName = @"topbar_ipad.png";
+    } else {
+        logoName = @"topbar.png";
+    }
+    UIImage *logo = [[UIImage imageNamed:logoName]
+            
+            resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0) resizingMode:UIImageResizingModeStretch];
+    
+//    self.navigationController.view.backgroundColor = [UIColor clearColor];
+//    [self.navigationController.navigationBar setBarTintColor:[UIColor clearColor]];
+    
+    [self.navigationController.navigationBar setBackgroundImage:logo forBarMetrics:UIBarMetricsDefault];
+    
+    NSLog(@"Nav Size: height %f - width %f",self.navigationController.navigationBar.frame.size.height, self.navigationController.navigationBar.frame.size.width);
+    
+    
+}
+
 - (void)initSidebar
 {
-    menuButton = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"bell.png"] style:UIBarButtonItemStylePlain target:nil action:nil];
+    menuButton = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:self action:nil];
+////    menuButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"next.png"] style:UIBarButtonItemStylePlain target:self action:nil];
+////    menuButton.barTin
+//    
+//    [menuButton setTintColor:[UIColor clearColor]];
+//    UIImage *bell = [[UIImage imageNamed:@"bell.png"]
+//                     
+//                     resizableImageWithCapInsets:UIEdgeInsetsMake(-20, 0, 0, 0) resizingMode:UIImageResizingModeStretch];
+//    [menuButton setBackgroundImage:bell forState:UIControlStateNormal barMetrics:0];
     
-    UIColor *tintColor = [UIColor colorWithRed:0.11 green:0.525 blue:0.976 alpha:1];
-    [menuButton setTintColor:tintColor];
+
     //Add sidebar effect
     SWRevealViewController *revealViewController = self.revealViewController;
     if ( revealViewController )
     {
         [menuButton setTarget: self.revealViewController];
-        [menuButton setAction: @selector( revealToggle:)];
-        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
+        [menuButton setAction: @selector( rightRevealToggle:)];
+        self.revealViewController.rightViewRevealOverdraw = 0.0;
     }
-    self.navigationItem.leftBarButtonItem = menuButton;
+    self.navigationItem.rightBarButtonItem = menuButton;
+    SidebarViewController *replacement = [[SidebarViewController alloc] init];
+    [self.revealViewController setRightViewController:replacement animated:YES];
 }
 
 - (void)initNotificationBadge
@@ -104,45 +163,40 @@
     [UIView setAnimationDuration:0.5];
     [UIView setAnimationDelay:1.0];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
-    menuButton.badgeValue = [NSString stringWithFormat:@"%d", 3];
+    menuButton.badgeValue = [NSString stringWithFormat:@"%ld", (long)[UIApplication sharedApplication].applicationIconBadgeNumber];
     menuButton.badgeBGColor = [UIColor orangeColor];
-    menuButton.badgeOriginX = 33.5;
+    menuButton.badgeOriginX = 10.0;
+    menuButton.badgeOriginY = -40;
     [UIView commitAnimations];
 }
 
 - (void)initAddressBar
 {
-    CGRect screenBound = self.view.bounds;
-    CGFloat widthForTextField = screenBound.size.width * 0.5;
-    CGFloat heightForTextField;
-    if([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
-        heightForTextField = screenBound.size.height * 0.03;
+    CGFloat widthForButton;
+    if([[UIDevice currentDevice]userInterfaceIdiom]==UIUserInterfaceIdiomPad){
+        widthForButton = 100;
     } else {
-        heightForTextField = screenBound.size.height * 0.05;
+        widthForButton = 50;
     }
-    addressBar = [[UITextField alloc]initWithFrame:CGRectMake(0, 0, widthForTextField, heightForTextField)];
-    addressBar.font = [UIFont systemFontOfSize:heightForTextField / 2.3];
-    addressBar.autocorrectionType = UITextAutocorrectionTypeNo;
-    addressBar.keyboardType = UIKeyboardTypeDefault;
-    addressBar.returnKeyType = UIReturnKeyDone;
-    addressBar.clearButtonMode = UITextFieldViewModeWhileEditing;
-    addressBar.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
-    [addressBar setTextAlignment:NSTextAlignmentCenter];
-    addressBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    addressBar.borderStyle = UITextBorderStyleRoundedRect;
     
-    if (currentAddress != nil) {
-        [addressBar setText:currentAddress];
-    } else {
-        [addressBar setText:@"http://hmtmoda.com/"];
-    }
-    [addressBar setTag:0];
-    addressBar.delegate = self;
+    UIButton *tmp = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, widthForButton, 100)];
     
-    [self.navigationItem.titleView setNeedsLayout];
-    [self.navigationItem.titleView setNeedsDisplay];
-    [self.navigationItem.titleView setNeedsUpdateConstraints];
-    self.navigationItem.titleView = addressBar;
+    UIButton *button =
+    [[UIButton alloc] initWithFrame:CGRectMake(0, 0, widthForButton *2.3, 100)];
+    [button addTarget:self action:@selector(goToHome) forControlEvents:UIControlEventTouchUpInside];
+    
+    addressBar = [[UIBarButtonItem alloc] initWithCustomView:button];
+    
+    UIBarButtonItem *tmpItem = [[UIBarButtonItem alloc] initWithCustomView:tmp];
+    
+//    [[UIBarButtonItem alloc]initWithTitle:@"" style:UIBarButtonItemStylePlain target:self action:@selector(goToHome)];
+    
+    
+//    [self.navigationItem.titleView setNeedsLayout];
+//    [self.navigationItem.titleView setNeedsDisplay];
+//    [self.navigationItem.titleView setNeedsUpdateConstraints];
+//    self.navigationItem.titleView = addressBar;
+    self.navigationItem.leftBarButtonItems = @[tmpItem, addressBar];
 }
 
 - (void)initWKWebView
@@ -156,25 +210,25 @@
     [self.view addSubview:_wkWebView];
 }
 
-- (void)initRefreshButton
-{
-    addressBar.rightView = nil;
-    CGFloat widthForButton = addressBar.frame.size.width * 0.15;
-    if([[UIDevice currentDevice]userInterfaceIdiom]==UIUserInterfaceIdiomPad){
-        widthForButton = addressBar.frame.size.width * 0.1;
-    }
-    CGRect frame = CGRectMake(0,0,widthForButton,addressBar.frame.size.height);
-    UIButton *refreshButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [refreshButton addTarget:self action:@selector(refreshAction:) forControlEvents:UIControlEventTouchUpInside];
-    refreshButton.frame = frame;
-    refreshButton.font = [UIFont systemFontOfSize:18];
-    [refreshButton setGlyphNamed:@"fontawesome##refresh"];
-    [refreshButton setNeedsDisplay];
-    addressBar.tintColor = [UIColor darkGrayColor];
-    addressBar.rightView = refreshButton;
-    addressBar.rightView.clipsToBounds = YES;
-    addressBar.rightViewMode = UITextFieldViewModeUnlessEditing;
-}
+//- (void)initRefreshButton
+//{
+//    addressBar.rightView = nil;
+//    CGFloat widthForButton = addressBar.frame.size.width * 0.15;
+//    if([[UIDevice currentDevice]userInterfaceIdiom]==UIUserInterfaceIdiomPad){
+//        widthForButton = addressBar.frame.size.width * 0.1;
+//    }
+//    CGRect frame = CGRectMake(0,0,widthForButton,addressBar.frame.size.height);
+//    UIButton *refreshButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+//    [refreshButton addTarget:self action:@selector(refreshAction:) forControlEvents:UIControlEventTouchUpInside];
+//    refreshButton.frame = frame;
+//    refreshButton.font = [UIFont systemFontOfSize:18];
+//    [refreshButton setGlyphNamed:@"fontawesome##refresh"];
+//    [refreshButton setNeedsDisplay];
+//    addressBar.tintColor = [UIColor darkGrayColor];
+//    addressBar.rightView = refreshButton;
+//    addressBar.rightView.clipsToBounds = YES;
+//    addressBar.rightViewMode = UITextFieldViewModeUnlessEditing;
+//}
 
 - (void)initLoadingIndicator
 {
@@ -200,6 +254,21 @@
 }
 
 #pragma mark - Custom layout action
+- (void)goToHome {
+    NSURLRequest *requestObj = [NSURLRequest requestWithURL:[NSURL URLWithString:@"http://hmtmoda.com/"]];
+    
+    [_wkWebView loadRequest:requestObj];
+    [loadingView setHidden:NO];
+}
+
+- (void)gotToLink:(NSString *)link
+{
+    NSURLRequest *requestObj = [NSURLRequest requestWithURL:[NSURL URLWithString:link]];
+    
+    [_wkWebView loadRequest:requestObj];
+    [loadingView setHidden:NO];
+}
+
 - (void)refreshAction:(UIButton *)sender
 {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
@@ -207,19 +276,19 @@
     });
 }
 
-- (BOOL)addressBarActive{
-    [addressBar setTextAlignment:NSTextAlignmentLeft];
-    return YES;
-}
+//- (BOOL)addressBarActive{
+//    [addressBar setTextAlignment:NSTextAlignmentLeft];
+//    return YES;
+//}
 
-- (void)cancelAction{
-    [addressBar resignFirstResponder];
-}
-
-- (BOOL)addressBarEndActive{
-    [addressBar setTextAlignment:NSTextAlignmentCenter];
-    return YES;
-}
+//- (void)cancelAction{
+//    [addressBar resignFirstResponder];
+//}
+//
+//- (BOOL)addressBarEndActive{
+//    [addressBar setTextAlignment:NSTextAlignmentCenter];
+//    return YES;
+//}
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
@@ -231,24 +300,45 @@
 }
 
 #pragma mark - Common function
-- (void)loadWebView
+//- (void)loadWebView
+//{
+//    NSURLRequest *requestObj = [NSURLRequest requestWithURL:[NSURL URLWithString:addressBar.text]];
+//    
+//    [_wkWebView loadRequest:requestObj];
+//    [loadingView setHidden:NO];
+//}
+
+- (void)toggleNotiBar
 {
-    NSURLRequest *requestObj = [NSURLRequest requestWithURL:[NSURL URLWithString:addressBar.text]];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self.revealViewController rightRevealToggleAnimated:YES];
+    });
+}
+
+- (UIImage *)imageByCroppingImage:(UIImage *)image toSize:(CGSize)size
+{
+    double x = (image.size.width - size.width) / 2.0;
+    double y = (image.size.height - size.height) / 2.0;
     
-    [_wkWebView loadRequest:requestObj];
-    [loadingView setHidden:NO];
+    CGRect cropRect = CGRectMake(x, y, size.height, size.width);
+    CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], cropRect);
+    
+    UIImage *cropped = [UIImage imageWithCGImage:imageRef];
+    CGImageRelease(imageRef);
+    
+    return cropped;
 }
 
 #pragma mark - Notification observation
 - (void)toggleView:(NSNotification *)notification
 {
     SWRevealViewController *revealViewController = self.revealViewController;
-    [revealViewController revealToggle:self];
+    [revealViewController rightRevealToggle:self];
     
     NSString *link = notification.object;
     if (link != nil) {
-        [addressBar setText:link];
-        [self loadWebView];
+//        [addressBar setText:link];
+        [self gotToLink:link];
     }
 }
 
@@ -261,6 +351,12 @@
     newsDetailViewController.noti = notiObj;
     UINavigationController *navBar=[[UINavigationController alloc]initWithRootViewController:newsDetailViewController];
     [self presentViewController:navBar animated:YES completion:nil];
+}
+
+- (void)updateBadge:(NSNotification *)notification
+{
+    NSLog(@"Update ne ahyhy");
+    menuButton.badgeValue = [NSString stringWithFormat:@"%ld", (long)[UIApplication sharedApplication].applicationIconBadgeNumber];
 }
 
 @end

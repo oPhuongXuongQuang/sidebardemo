@@ -410,7 +410,7 @@
 				TargetAttributes = {
 					77B81ABE1B4FD6E4003908E1 = {
 						CreatedOnToolsVersion = 6.1;
-						DevelopmentTeam = H2XZXR94VS;
+						DevelopmentTeam = U7A5GR328B;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplePay = {
@@ -758,13 +758,13 @@
 				CODE_SIGN_ENTITLEMENTS = sidebardemo.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = H2XZXR94VS;
+				DEVELOPMENT_TEAM = U7A5GR328B;
 				ENABLE_BITCODE = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
 				INFOPLIST_FILE = sidebardemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.notidemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hmt.moda;
 				PRODUCT_MODULE_NAME = "HMT Moda";
 				PRODUCT_NAME = "HMT Moda";
 				PROVISIONING_PROFILE = "";
@@ -782,13 +782,13 @@
 				CODE_SIGN_ENTITLEMENTS = sidebardemo.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Trang Thanh (PDEF3JS5A7)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = H2XZXR94VS;
+				DEVELOPMENT_TEAM = U7A5GR328B;
 				ENABLE_BITCODE = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INFOPLIST_FILE = sidebardemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.notidemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hmt.moda;
 				PRODUCT_MODULE_NAME = "HMT Moda";
 				PRODUCT_NAME = "HMT Moda";
 				PROVISIONING_PROFILE = "";

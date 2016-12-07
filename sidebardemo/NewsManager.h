@@ -14,5 +14,6 @@
 
 @property (strong) NotificationManager *notificationManager;
 - (void)fetchNewsByDeviceId:(int)device_id deviceName: (NSString *)device_name page:(int) page;
++ (void)registerOnServerWithToken:(NSString *)gcm_id deviceId:(NSString *)device_id deviceName:(NSString *)device_name;
 
 @end

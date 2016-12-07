@@ -19,9 +19,9 @@
         NSLog(@"Error %@; %@", error, [error localizedDescription]);
     } else {
         NSDictionary *dict = [NSDictionary dictionaryWithObject:notis forKey:@"notis"];
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
+//        [[NSOperationQueue mainQueue] addOperationWithBlock:^ {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"ReceiveNewsNotification" object:dict];
-        }];
+//        }];
     }
 }
 
